@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Compañeros</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Califica a tus Compañeros</h1>
+        <p>Conoce a tus compañeros de clase antes de tener equipo con ellos.</p>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar Matrícula..." onkeyup="searchMatricula()">
+            <button onclick="searchMatricula()">Buscar</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>A00819232</td>
+                    <td>4.5/10</td>
+                </tr>
+                <tr>
+                    <td>A00172819</td>
+                    <td>3.8/10</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function searchMatricula() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.querySelector('table tbody');
+            const rows = table.getElementsByTagName('tr');
+            let found = false;
+
+            for (let row of rows) {
+                const matricula = row.cells[0].innerText.toLowerCase();
+                if (matricula.includes(input)) {
+                    row.style.display = '';
+                    found = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+
+            if (!found && input) {
+                if (confirm('No se encontraron resultados. ¿Quieres agregar una nueva matrícula?')) {
+                    window.location.href = `newstudent.html?matricula=${input}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
