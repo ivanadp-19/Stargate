@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <button onclick="goBack()" style="margin: 10px;">Back</button> <!-- Back button -->
         <h1>Student Details</h1>
         <!-- Student Info -->
         <div id="studentInfo">
@@ -52,6 +53,10 @@
             document.getElementById('averageRating').textContent = 'Fallback Rating';
             const commentsList = document.getElementById('commentsList');
             commentsList.innerHTML = '<li>Fallback Comment 1</li><li>Fallback Comment 2</li>';
+        }
+
+        function goBack() {
+            window.history.back();
         }
     </script>
 </body>
