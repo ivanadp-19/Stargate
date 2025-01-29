@@ -15,31 +15,76 @@
             <input type="text" id="searchInput" placeholder="Buscar Matrícula..." onkeyup="searchMatricula()">
             <button onclick="searchMatricula()">Buscar</button>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Matrícula</th>
-                    <th>Rating</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>A00819232</td>
-                    <td>4.5/10</td>
-                </tr>
-                <tr>
-                    <td>A00172819</td>
-                    <td>3.8/10</td>
-                </tr>
-            </tbody>
-        </table>
+        <div id="tableContainer">
+            <table id="studentsTable">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data rows will be added here dynamically or as fallback -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Add Student Form (hidden by default) -->
+        <div id="addStudentForm" style="display: none; text-align: center;">
+            <h2>Add New Student</h2>
+            <form>
+                <input type="text" id="newMatricula" placeholder="Enter Matrícula">
+                <input type="number" id="newRating" placeholder="Rating (0-5)" min="0" max="5" step="1">
+                <input type="text" id="newComment" placeholder="Comment">
+                <button type="button" onclick="addStudent()">Submit</button>
+            </form>
+        </div>
     </div>
 
     <script>
+        window.onload = function() {
+            fetchStudentData();
+        };
+
+        function fetchStudentData() {
+            fetch('https://api.yourdomain.com/students')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        populateTable(data);
+                    } else {
+                        loadFallbackData();
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to fetch students:', error);
+                    loadFallbackData();
+                });
+        }
+
+        function populateTable(data) {
+            const tbody = document.getElementById('studentsTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Clear existing rows
+            data.forEach(student => {
+                const row = tbody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                cell1.innerHTML = `<a href="viewstudent.html?matricula=${student.matricula}">${student.matricula}</a>`;
+                cell2.textContent = `${student.rating}/5`;
+            });
+        }
+
+        function loadFallbackData() {
+            const fallbackData = [
+                { matricula: 'A00819232', rating: 4.5 },
+                { matricula: 'A00172819', rating: 3.8 }
+            ];
+            populateTable(fallbackData);
+        }
+
         function searchMatricula() {
             const input = document.getElementById('searchInput').value.toLowerCase();
-            const table = document.querySelector('table tbody');
-            const rows = table.getElementsByTagName('tr');
+            const rows = document.querySelector('table tbody').getElementsByTagName('tr');
+            const header = document.querySelector('table thead');
             let found = false;
 
             for (let row of rows) {
@@ -52,11 +97,22 @@
                 }
             }
 
+            const form = document.getElementById('addStudentForm');
             if (!found && input) {
-                if (confirm('No se encontraron resultados. ¿Quieres agregar una nueva matrícula?')) {
-                    window.location.href = `newstudent.html?matricula=${input}`;
-                }
+                form.style.display = 'block'; // Show the form
+                header.style.display = 'none'; // Hide the header
+            } else {
+                form.style.display = 'none'; // Hide the form
+                header.style.display = found ? '' : 'none'; // Show or hide the header based on search results
             }
+        }
+
+        function addStudent() {
+            const matricula = document.getElementById('newMatricula').value;
+            const rating = document.getElementById('newRating').value;
+            const comment = document.getElementById('newComment').value;
+            console.log('Adding student:', matricula, rating, comment);
+            // Here you would typically send data to the backend to add a new student
         }
     </script>
 </body>

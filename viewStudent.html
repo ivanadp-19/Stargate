@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Details</h1>
+        <!-- Student Info -->
+        <div id="studentInfo">
+            <p><strong>Matrícula:</strong> <span id="matricula">Loading...</span></p>
+            <p><strong>Average Rating:</strong> <span id="averageRating">Loading...</span></p>
+            <h2>Comments and Ratings:</h2>
+            <ul id="commentsList">
+                <!-- Comments will be loaded here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const matricula = urlParams.get('matricula');
+
+            fetch(`https://api.yourdomain.com/students/${matricula}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('matricula').textContent = data.matricula;
+                    document.getElementById('averageRating').textContent = data.averageRating;
+                    
+                    const commentsList = document.getElementById('commentsList');
+                    commentsList.innerHTML = ''; // Clear existing comments
+                    
+                    data.comments.forEach(comment => {
+                        const li = document.createElement('li');
+                        li.textContent = `${comment.rating} - ${comment.text}`;
+                        commentsList.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching student data:', error);
+                    // Load fallback data if fetching fails
+                    loadFallbackData();
+                });
+        }
+
+        function loadFallbackData() {
+            document.getElementById('matricula').textContent = 'Fallback Matrícula';
+            document.getElementById('averageRating').textContent = 'Fallback Rating';
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = '<li>Fallback Comment 1</li><li>Fallback Comment 2</li>';
+        }
+    </script>
+</body>
+</html>
