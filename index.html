@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Califica a tus Compañeros</h1>
-        <p>Conoce a tus compañeros de clase antes de tener equipo con ellos.</p>
+        <p>Conoce a tus compañeros de clase antes de hacer equipo con ellos.</p>
         
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Buscar Matrícula..." onkeyup="searchMatricula()">
@@ -46,7 +46,7 @@
         };
 
         function fetchStudentData() {
-            fetch('https://api.yourdomain.com/students')
+            fetch('https://pruebaback.railway.internal/students', )
                 .then(response => response.json())
                 .then(data => {
                     if (data.length > 0) {
@@ -68,18 +68,12 @@
                 const row = tbody.insertRow();
                 const cell1 = row.insertCell(0);
                 const cell2 = row.insertCell(1);
-                cell1.innerHTML = `<a href="viewstudent.html?matricula=${student.matricula}">${student.matricula}</a>`;
-                cell2.textContent = `${student.rating}/5`;
+                cell1.innerHTML = `<a href="viewstudent.html?matricula=${student.id}">${student.matriculation_number}</a>`;
+                cell2.textContent = `${student.name}/5`;
             });
         }
 
-        function loadFallbackData() {
-            const fallbackData = [
-                { matricula: 'A00819232', rating: 4.5 },
-                { matricula: 'A00172819', rating: 3.8 }
-            ];
-            populateTable(fallbackData);
-        }
+    
 
         function searchMatricula() {
             const input = document.getElementById('searchInput').value.toLowerCase();

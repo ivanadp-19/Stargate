@@ -22,19 +22,20 @@
     </div>
 
     <script>
-        window.onload = function() {
+       window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const matricula = urlParams.get('matricula');
+            const studentId = urlParams.get('id'); // Changed from 'matricula' to 'id'
 
-            fetch(`https://api.yourdomain.com/students/${matricula}`)
+            fetch(`https://pruebaback-production-2761.up.railway.app/students/${studentId}`,{mode: 'no-cors'})
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('matricula').textContent = data.matricula;
-                    document.getElementById('averageRating').textContent = data.averageRating;
+                    document.getElementById('matricula').textContent = data.matriculation_number;
+                    document.getElementById('averageRating').textContent = data.average_rating.toFixed(2); // Ensure it's a number and format it
                     
                     const commentsList = document.getElementById('commentsList');
                     commentsList.innerHTML = ''; // Clear existing comments
                     
+                    // Assuming data.comments is an array of comments
                     data.comments.forEach(comment => {
                         const li = document.createElement('li');
                         li.textContent = `${comment.rating} - ${comment.text}`;
@@ -43,17 +44,12 @@
                 })
                 .catch(error => {
                     console.error('Error fetching student data:', error);
-                    // Load fallback data if fetching fails
-                    loadFallbackData();
+                    
                 });
         }
 
-        function loadFallbackData() {
-            document.getElementById('matricula').textContent = 'Fallback Matrícula';
-            document.getElementById('averageRating').textContent = 'Fallback Rating';
-            const commentsList = document.getElementById('commentsList');
-            commentsList.innerHTML = '<li>Fallback Comment 1</li><li>Fallback Comment 2</li>';
-        }
+
+   
 
         function goBack() {
             window.history.back();
